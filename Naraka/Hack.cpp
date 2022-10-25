@@ -7,14 +7,13 @@ MemoryToolsWrapper* memorytools;
 Driver* pdriver;
 
 std::vector<uint64_t> entitylist;
-DWORD dwLoopThreadId = 0;
-extern HANDLE hFinishEvent;
+
 
 namespace config
 {
-	bool ÈËÎï·½¿ò = true;
-	bool ÈËÎïêÇ³Æ = true;
-	bool ×Ô¶¯Õñµ¶ = true;
+	bool äººç‰©æ–¹æ¡† = true;
+	bool äººç‰©æ˜µç§° = true;
+	bool è‡ªåŠ¨æŒ¯åˆ€ = true;
 }
 
 void InitializeAddress()
@@ -54,44 +53,44 @@ void draw_menu(Nvidia* overlay)
 	}
 	if (open)
 	{
-		overlay->draw_text_yellow(10, 50, L"[INS ÏÔÊ¾->Òş²Ø]");
+		overlay->draw_text_yellow(10, 50, L"[INS æ˜¾ç¤º->éšè—]");
 
-		if (config::ÈËÎï·½¿ò)
+		if (config::äººç‰©æ–¹æ¡†)
 		{
-			overlay->draw_text_yellow(10, 70, L"Íæ¼Ò·½¿ò -> F6");
+			overlay->draw_text_yellow(10, 70, L"ç©å®¶æ–¹æ¡† -> F6");
 		}
-		if (!config::ÈËÎï·½¿ò)
+		if (!config::äººç‰©æ–¹æ¡†)
 		{
-			overlay->draw_text_white(10, 70, L"Íæ¼Ò·½¿ò -> F6");
+			overlay->draw_text_white(10, 70, L"ç©å®¶æ–¹æ¡† -> F6");
 		}
-		if (config::ÈËÎïêÇ³Æ)
+		if (config::äººç‰©æ˜µç§°)
 		{
-			overlay->draw_text_yellow(10, 90, L"Íæ¼ÒÃû×Ö -> F7");
+			overlay->draw_text_yellow(10, 90, L"ç©å®¶åå­— -> F7");
 		}
-		if (!config::ÈËÎïêÇ³Æ)
+		if (!config::äººç‰©æ˜µç§°)
 		{
-			overlay->draw_text_white(10, 90, L"Íæ¼ÒÃû×Ö -> F7");
+			overlay->draw_text_white(10, 90, L"ç©å®¶åå­— -> F7");
 		}
 
-		if (config::×Ô¶¯Õñµ¶)
+		if (config::è‡ªåŠ¨æŒ¯åˆ€)
 		{
-			overlay->draw_text_yellow(10, 110, L"×Ô¶¯Õñµ¶ -> F8");
+			overlay->draw_text_yellow(10, 110, L"è‡ªåŠ¨æŒ¯åˆ€ -> F8");
 		}
-		if (!config::×Ô¶¯Õñµ¶)
+		if (!config::è‡ªåŠ¨æŒ¯åˆ€)
 		{
-			overlay->draw_text_white(10, 110, L"×Ô¶¯Õñµ¶ -> F8");
+			overlay->draw_text_white(10, 110, L"è‡ªåŠ¨æŒ¯åˆ€ -> F8");
 		}
 		if (GetAsyncKeyState(VK_F6) & 1)
 		{
-			config::ÈËÎï·½¿ò = !config::ÈËÎï·½¿ò;
+			config::äººç‰©æ–¹æ¡† = !config::äººç‰©æ–¹æ¡†;
 		}
 		if (GetAsyncKeyState(VK_F7) & 1)
 		{
-			config::ÈËÎïêÇ³Æ = !config::ÈËÎïêÇ³Æ;
+			config::äººç‰©æ˜µç§° = !config::äººç‰©æ˜µç§°;
 		}
 		if (GetAsyncKeyState(VK_F8) & 1)
 		{
-			config::×Ô¶¯Õñµ¶ = !config::×Ô¶¯Õñµ¶;
+			config::è‡ªåŠ¨æŒ¯åˆ€ = !config::è‡ªåŠ¨æŒ¯åˆ€;
 		}
 	}
 }
@@ -117,11 +116,11 @@ void draw_esp(Nvidia* overlay)
 			D2D1_RECT_F box;
 			getboxrect(box, entitypos, headpos);
 
-			if (config::ÈËÎï·½¿ò)
+			if (config::äººç‰©æ–¹æ¡†)
 			{
 				overlay->draw_rect(box.left, box.top, box.right, box.bottom, 1.5);
 			}
-			if (config::ÈËÎïêÇ³Æ)
+			if (config::äººç‰©æ˜µç§°)
 				overlay->draw_text_white(headpos.x, headpos.y + 3, sdk::get_name(entity).c_str());
 		}
 
@@ -139,7 +138,7 @@ void update()
 	{
 		uintptr_t entityaddr = sdk::get_entityaddr(playeritems, i);
 		uintptr_t entityteamid = sdk::get_team(entityaddr);
-		if (localaddr != entityaddr && entityteamid != localteamid)//ÅÅ³ı¶ÓÎé ºÍ ×Ô¼º
+		if (localaddr != entityaddr && entityteamid != localteamid)//æ’é™¤é˜Ÿä¼ å’Œ è‡ªå·±
 		{
 			entitylist.push_back(entityaddr);
 		}
@@ -148,30 +147,30 @@ void update()
 
 void entity_loop()
 {
-	if (!config::×Ô¶¯Õñµ¶) return;
+	if (!config::è‡ªåŠ¨æŒ¯åˆ€) return;
 	auto local = sdk::get_local();
 	for (auto entity : entitylist)
 	{
-		if (sdk::is_weapon(sdk::get_weapon(entity)) && sdk::is_weapon(sdk::get_weapon(local)))//ÅĞ¶ÏÊÇ·ñÊÖ³ÖÎäÆ÷ 
+		if (sdk::is_weapon(sdk::get_weapon(entity)) && sdk::is_weapon(sdk::get_weapon(local)))//åˆ¤æ–­æ˜¯å¦æ‰‹æŒæ­¦å™¨ 
 		{
-			if (sdk::get_endurelevel(local) < 21)//ÅĞ¶Ïµ±Ç°×´Ì¬ ÊÇ·ñĞèÒªÈ¥Õñµ¶
+			if (sdk::get_endurelevel(local) < 21)//åˆ¤æ–­å½“å‰çŠ¶æ€ æ˜¯å¦éœ€è¦å»æŒ¯åˆ€
 			{
 				Vector3 entitypos = sdk::get_enitypos(local);
 				Vector3 localpos = sdk::get_enitypos(entity);
 				auto distance = localpos.distTo(entitypos);
-				float angle = fabsf(math::AngleDifference(sdk::get_enityangle(entity), math::VectorToRotationYaw(math::FindLookAtVector(entitypos, localpos))));//µĞÈËÃæÏò ×Ô¼º µÄ ½Ç¶È
+				float angle = fabsf(math::AngleDifference(sdk::get_enityangle(entity), math::VectorToRotationYaw(math::FindLookAtVector(entitypos, localpos))));//æ•Œäººé¢å‘ è‡ªå·± çš„ è§’åº¦
 
 				if (distance > 5.9f)
 					continue;
 
-				//À¶°ÔÌå¹¥»÷?
+				//è“éœ¸ä½“æ”»å‡»?
 				if (!sdk::is_attacking(entity))
 					continue;
 
-				if (angle > 68)//ÅĞ¶ÏµĞÈËÊÇ·ñÃæ¶Ô×Ô¼º ·Å³öĞîÁ¦
+				if (angle > 68)//åˆ¤æ–­æ•Œäººæ˜¯å¦é¢å¯¹è‡ªå·± æ”¾å‡ºè“„åŠ›
 					continue;
 
-				//ÉèÖÃG¼üÎªÕñµ¶ÈÈ¼ü
+				//è®¾ç½®Gé”®ä¸ºæŒ¯åˆ€çƒ­é”®
 				keybd_event('G', MapVirtualKey('G', MAPVK_VK_TO_VSC), 0, 0);
 				Sleep(10);
 				keybd_event('G', MapVirtualKey('G', MAPVK_VK_TO_VSC), 2, 0);
